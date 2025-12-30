@@ -1,10 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <title>SMART-HOME</title>
+  <body>
+    <header id="header">
+      <div id="header-controls">
+        <div id="header-logo">
+          <img id="header-home-icon" src="home-button.png" alt="house icon" />
+          <h1 id="header-title">MY HOME</h1>
+        </div>
+        <div id="header-buttons">
+          <select id="room-select">
+            <option value="all">All floor</option>
+            <option value="room-1">Room 1</option>
+            <option value="room-2">Room 2</option>
+            <option value="room-3">Room 3</option>
+          </select>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <div id="top-panel">
+        <div id="general-statistic">
+          <p id="general-power-label">GENERAL POWER:</p>
+        </div>
+        <div id="detailed-statistics">
+          <div id="floor-plan-wrapper">
+            <button id="btn-floor-plan">FLOOR PLAN</button>
+          </div>
+        </div>
+        <div id="todo-button">
+          <div id="add-device-wrapper">
+            <button id="btn-add-device">ADD DEVICE +</button>
+          </div>
+        </div>
+      </div>
+      <section class="devices">
+        <div class="device">
+          <div class="device__remove">
+            <img class="device__remove-icon" src="cross.png" alt="cross icon" />
+          </div>
 
-</body>
+          <div class="device__header">
+            <h3 class="device__title">REFRIGERATOR</h3>
+            <hr class="device__divider" />
+          </div>
+
+          <div class="device__info">
+            <p class="device__power">Power:</p>
+            <p class="device__room">Room: 1</p>
+
+            <div class="device__temperature">
+              <p class="device__temperature-value">Temp: +5 C</p>
+              <input
+                class="device__temperature-range"
+                type="range"
+                min="0"
+                max="100"
+                value="50"
+              />
+            </div>
+          </div>
+
+          <button class="device__power-button">POWER</button>
+        </div>
+      </section>
+    </main>
+
+    <footer id="footer" class="bottom-panel">
+      <div id="electricity-toggle" class="toggle-group">
+        <span id="electricity-label">ELECTRICITY</span>
+        <label class="switch">
+          <input id="electricity-checkbox" type="checkbox" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div id="water-toggle" class="toggle-group">
+        <span id="water-label">WATER VALVE</span>
+        <label class="switch">
+          <input id="water-checkbox" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </footer>
+    <!--MODAL FORM-->
+    <!--<div id="add-device-modal" class="modal-overlay">-->
+    <!--    <div id="add-device-window" class="modal-window">-->
+    <!--        <span id="modal-close-btn" class="close-btn">&times;</span>-->
+    <!--        <h2 id="modal-title">Add New Device</h2>-->
+
+    <!--        <form id="add-device-form">-->
+    <!--            <label for="device-name-input">Device Name:</label>-->
+    <!--            <input id="device-name-input" type="text" />-->
+
+    <!--            <label for="device-power-input">Power (W):</label>-->
+    <!--            <input id="device-power-input" type="number" />-->
+
+    <!--            <label for="device-room-input">Room:</label>-->
+    <!--            <input id="device-room-input" type="number" />-->
+
+    <!--            <button id="save-device-btn" type="submit" class="save-btn">-->
+    <!--                SAVE DEVICE-->
+    <!--            </button>-->
+    <!--        </form>-->
+    <!--    </div>-->
+    <!--</div>-->
+    <script src="index.js"></script>
+  </body>
 </html>

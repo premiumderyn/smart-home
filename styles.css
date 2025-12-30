@@ -1,0 +1,119 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #aec9ff;
+}
+#header {
+  #header-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    @media (min-width: 720px) {
+      flex-direction: row;
+    }
+    #header-logo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      #header-home-icon {
+        height: 50px;
+        width: 50px;
+      }
+      #header-title {
+        color: #ffffff;
+      }
+    }
+  }
+}
+#main {
+  #top-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    @media (min-width: 720px) {
+      flex-direction: row;
+    }
+    #general-statistics {
+    }
+    #detailed-statistics {
+    }
+    #todo-button {
+    }
+  }
+  .devices {
+    margin: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    @media (min-width: 720px) {
+      flex-direction: row;
+    }
+    .device {
+      padding: 10px;
+      border: 2px solid;
+      border-color: #848080;
+      .device__remove {
+        /*display: flex;*/
+        /*align-items: flex-end;*/
+        text-align: right;
+        .device__remove-icon {
+          height: 15px;
+        }
+      }
+      .device__temperature {
+        display: flex;
+        flex-direction: column;
+        /*  input direction?  */
+      }
+    }
+  }
+}
+#footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  @media (min-width: 720px) {
+    flex-direction: row;
+  }
+  #electricity-toggle {
+  }
+}
+#add-device-modal {
+  margin: 100px;
+  border: 2px solid red;
+  #add-device-window {
+    text-align: center;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    #modal-close-btn {
+      text-align: right;
+      display: block;
+      /*justify-content: center;*/
+      /*align-items: flex-end;*/
+    }
+    #add-device-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
