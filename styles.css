@@ -53,7 +53,7 @@ body {
     #todo-button {
     }
   }
-  .devices {
+  #devices {
     margin: 40px;
     display: flex;
     align-items: center;

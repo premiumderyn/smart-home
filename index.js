@@ -11,7 +11,7 @@ class Electricity {
     this.load = 0;
     this.displayElement = displayElement;
   }
-  updateView(){
+  updateGeneralTextView(){
       if(this.displayElement){
           this.displayElement.textContent=this.generalEl;
       }
@@ -22,14 +22,14 @@ class Electricity {
   addConsumption(Power) {
     this.generalEl += Power;
     this.changeLoad();
-    this.updateView();
+    this.updateGeneralTextView();
     return this.generalEl;
 
   }
   removeConsumption(Power) {
     this.generalEl -= Power;
     this.changeLoad();
-    this.updateView();
+    this.updateGeneralTextView();
     return this.generalEl;
   }
   changeLoad() {
@@ -60,6 +60,47 @@ class Device {
     this.isOn = false;
     this.basePower=power;
     this.houseMeter = houseMeter;
+    this.element = null;
+  }
+  renderDevice(){
+      const div = document.createElement('div');
+      div.classList.add('device');
+      div.innerHTML = `
+            <div class="device__remove">
+                <img class="device__remove-icon" src="cross.png" alt="cross icon" />
+            </div>
+            <div class="device__header">
+                <p class="device__name"><strong>${this.name}</strong></p>
+                <hr class="device__divider" />
+             </div>
+            <div class="device__info">
+                <p class="device__power">Power: <span class="device__power-value">0</span>W</p>
+                <p class="device__room">Room: ${this.room}</p>
+            </div>
+            <div class="device__status">
+                <button class="device__power-button" style="background-color: red;">OFF</button>
+            </div>
+        `;
+      this.element = div;
+      const btn = div.querySelector('.device__power-button');
+      btn.addEventListener('click', () => {
+          this.changeDeviceStatus();
+          this.updateView(); // Оновити вигляд саме цієї картки
+      });
+      return div;
+  }
+  updateView(){
+      if (!this.element) return;
+      const powerSpan = this.element.querySelector('.device__power-value');
+      const btn = this.element.querySelector('.device__power-button');
+      powerSpan.textContent = this.power;
+      if (this.isOn) {
+          btn.style.backgroundColor = "green";
+          btn.textContent = "ON";
+      } else {
+          btn.style.backgroundColor = "red";
+          btn.textContent = "OFF";
+      }
   }
   changeDeviceStatus() {
     this.isOn = !this.isOn;
@@ -141,23 +182,49 @@ class Freezer extends Device {
   }
 }
 class Lightning extends Device {
-    constructor(name, power, room, houseMeter, buttonElement) {
+    constructor(name, power, room, houseMeter) {
         super(name, power, room, houseMeter);
         this.brightness = 0;
         this.basePower=power;
-        this.btnRef=buttonElement;
+        // this.btnRef=buttonElement;
     }
-    updateButtonView() {
-        if (this.btnRef) {
-            if (this.isOn) {
-                this.btnRef.style.backgroundColor = "green"; // Або ваш клас для увімкнення
-                this.btnRef.textContent = "ON"; // Опціонально
-            } else {
-                this.btnRef.style.backgroundColor = "red"; // Або ваш клас для вимкнення
-                this.btnRef.textContent = "OFF"; // Опціонально
-            }
-        }
+    render(){
+        const deviceCard = super.renderDevice();
+        const brightnessContainer = document.createElement('div');
+        brightnessContainer.classList.add('device__details');
+        brightnessContainer.innerHTML = `
+            <p>Brightness: <span class="bright-val">${this.brightness}</span>%</p>
+            <input type="range" class="bright-range" min="0" max="100" value="${this.brightness}">
+        `;
+        const infoBlock = deviceCard.querySelector('.device__info');
+        infoBlock.appendChild(brightnessContainer);
+        const range = brightnessContainer.querySelector('.bright-range');
+        range.addEventListener('input', (e) => {
+            this.changeBrightness(parseInt(e.target.value));
+            this.updateView();
+        });
+        return deviceCard;
     }
+    updateView(){
+        super.updateView();
+        if (!this.element) return;
+        const brightSpan = this.element.querySelector('.bright-val');
+        const range = this.element.querySelector('.bright-range');
+
+        if (brightSpan) brightSpan.textContent = this.brightness;
+        if (range) range.value = this.brightness
+    }
+    // updateButtonView() {
+    //     if (this.btnRef) {
+    //         if (this.isOn) {
+    //             this.btnRef.style.backgroundColor = "green"; // Або ваш клас для увімкнення
+    //             this.btnRef.textContent = "ON"; // Опціонально
+    //         } else {
+    //             this.btnRef.style.backgroundColor = "red"; // Або ваш клас для вимкнення
+    //             this.btnRef.textContent = "OFF"; // Опціонально
+    //         }
+    //     }
+    // }
     get currentBrightness() {
         return this.brightness;
     }
@@ -176,7 +243,7 @@ class Lightning extends Device {
             this.power = 0;
             this.isOn = false;
         }
-        this.updateButtonView();
+        this.updateView();
         return this.isOn;
     }
     changeBrightness(value) {
@@ -200,15 +267,11 @@ class Lightning extends Device {
         return this.isOn;
     }
 }
-
-
 const generalEl = document.getElementById("general-power-value");
 const buttEl= document.getElementsByClassName("device__power-button")[0]
 const powerEl = document.getElementsByClassName("device__power-value")[0]
 const infoEl = document.getElementsByClassName("device__details-value")[0]
 const inputEl= document.getElementsByClassName("device__details-range")[0]
-const myHomeElectricity = new Electricity(generalEl);
-const Lamp = new Lightning("Bulb", 100, 2, myHomeElectricity, buttEl);
 
 const addDeviceButton = document.getElementById("btn-add-device");
 const loginDialog = document.getElementById("modal-dialog");
@@ -218,32 +281,21 @@ addDeviceButton.addEventListener('click', () => {
     loginDialog.showModal();
 });
 
-// Close the modal with the cancel button
 closeBtn.addEventListener('click', () => {
     loginDialog.close('cancelled');
 });
 
-// Optional: Handle form submission when closed
 loginDialog.addEventListener('close', () => {
     outputBox.value = `Dialog result: ${loginDialog.returnValue}`;
 });
-
-Lamp.updateButtonView();
-buttEl.onclick = function() {
-    Lamp.changeDeviceStatus();
-    powerEl.textContent = Lamp.currentPower;
-    infoEl.textContent = Lamp.currentBrightness;
-    inputEl.value = Lamp.currentBrightness;
+function addDeviceToPage(deviceObj) {
+    const deviceCard = deviceObj.render(); // Створюємо HTML
+    document.getElementById("devices").appendChild(deviceCard); // Додаємо в контейнер
 }
-inputEl.addEventListener("input", function() {
-    Lamp.changeBrightness(parseInt(inputEl.value));
-    infoEl.textContent = Lamp.currentBrightness;
-    powerEl.textContent = Lamp.currentPower;
-    // if(!Lamp.currentStatus){
-    //     Lamp.changeDeviceStatus();
-    //     powerEl.textContent = Lamp.currentPower;
-    // }
-})
+const myHomeElectricity = new Electricity(generalEl);
+const Lamp1 = new Lightning("Lampa", 100, 2, myHomeElectricity);
+addDeviceToPage(Lamp1);
+
 
 // const SamsungTv = new SmartTv("Samsung Tv", 1000, 2, myHomeElectricity);
 // const Refrigator = new Freezer("LG", 1500, 3, myHomeElectricity);
