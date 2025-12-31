@@ -75,12 +75,16 @@ body {
           height: 15px;
         }
       }
-      .device__temperature {
+      .device__details {
         display: flex;
         flex-direction: column;
         /*  input direction?  */
       }
+      .device__power-button{
+          background-color: red;
+      }
     }
+
   }
 }
 #footer {
@@ -117,3 +121,25 @@ body {
     }
   }
 }
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+dialog {
+    padding: 2rem;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form > div {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+/*dialog{*/
+/*    display: block;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/

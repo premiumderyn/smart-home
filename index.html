@@ -26,7 +26,7 @@
     <main id="main">
       <div id="top-panel">
         <div id="general-statistic">
-          <p id="general-power-label">GENERAL POWER:</p>
+          <p id="general-power-label">GENERAL POWER: <span id="general-power-value">0</span>w</p>
         </div>
         <div id="detailed-statistics">
           <div id="floor-plan-wrapper">
@@ -40,34 +40,69 @@
         </div>
       </div>
       <section class="devices">
+
         <div class="device">
           <div class="device__remove">
             <img class="device__remove-icon" src="cross.png" alt="cross icon" />
           </div>
 
           <div class="device__header">
-            <h3 class="device__title">REFRIGERATOR</h3>
+            <h3 class="device__title">Lights</h3>
             <hr class="device__divider" />
           </div>
 
           <div class="device__info">
-            <p class="device__power">Power:</p>
+              <p class="device__power">Power: <span class="device__power-value">0</span>w</p>
             <p class="device__room">Room: 1</p>
 
-            <div class="device__temperature">
-              <p class="device__temperature-value">Temp: +5 C</p>
+            <div class="device__details">
+              <p class="device__details-text">
+                Brightness: <span class="device__details-value">0</span>%
+              </p>
               <input
-                class="device__temperature-range"
+                class="device__details-range"
                 type="range"
                 min="0"
                 max="100"
-                value="50"
+                value="0"
               />
             </div>
           </div>
-
-          <button class="device__power-button">POWER</button>
+          <div class="device__status">
+            <button class="device__power-button" type="button" id="myButton">OFF</button>
+          </div>
         </div>
+<!--          <div class="device">-->
+<!--              <div class="device__remove">-->
+<!--                  <img class="device__remove-icon" src="cross.png" alt="cross icon" />-->
+<!--              </div>-->
+
+<!--              <div class="device__header">-->
+<!--                  <h3 class="device__title">FRIDGE</h3>-->
+<!--                  <hr class="device__divider" />-->
+<!--              </div>-->
+
+<!--              <div class="device__info">-->
+<!--                  <p class="device__power">Power: <span class="device__power-value">0</span>w</p>-->
+<!--                  <p class="device__room">Room: 1</p>-->
+
+<!--                  <div class="device__details">-->
+<!--                      <p class="device__details-text">-->
+<!--                          Temp: <span class="device__details-value">+5</span> C-->
+<!--                      </p>-->
+<!--                      <input-->
+<!--                              class="device__temperature-range"-->
+<!--                              type="range"-->
+<!--                              min="0"-->
+<!--                              max="100"-->
+<!--                              value="50"-->
+<!--                      />-->
+<!--                  </div>-->
+<!--              </div>-->
+<!--              <div class="device__status">-->
+<!--                  <button class="device__power-button">POWER</button>-->
+<!--              </div>-->
+<!--          </div>-->
       </section>
     </main>
 
@@ -88,28 +123,32 @@
         </label>
       </div>
     </footer>
-    <!--MODAL FORM-->
-    <!--<div id="add-device-modal" class="modal-overlay">-->
-    <!--    <div id="add-device-window" class="modal-window">-->
-    <!--        <span id="modal-close-btn" class="close-btn">&times;</span>-->
-    <!--        <h2 id="modal-title">Add New Device</h2>-->
+    <dialog id="modal-dialog">
+        <form id="add-device-form">
+    <div id="add-device-modal" class="modal-overlay">
+        <div id="add-device-window" class="modal-window">
+            <span id="modal-close-btn" class="close-btn">&times;</span>
+            <h2 id="modal-title">Add New Device</h2>
 
-    <!--        <form id="add-device-form">-->
-    <!--            <label for="device-name-input">Device Name:</label>-->
-    <!--            <input id="device-name-input" type="text" />-->
 
-    <!--            <label for="device-power-input">Power (W):</label>-->
-    <!--            <input id="device-power-input" type="number" />-->
+                <label for="device-name-input">Device Name:</label>
+                <input id="device-name-input" type="text" />
 
-    <!--            <label for="device-room-input">Room:</label>-->
-    <!--            <input id="device-room-input" type="number" />-->
+                <label for="device-power-input">Power (W):</label>
+                <input id="device-power-input" type="number" />
 
-    <!--            <button id="save-device-btn" type="submit" class="save-btn">-->
-    <!--                SAVE DEVICE-->
-    <!--            </button>-->
-    <!--        </form>-->
-    <!--    </div>-->
-    <!--</div>-->
+                <label for="device-room-input">Room:</label>
+                <input id="device-room-input" type="number" />
+
+                <button id="save-device-btn" type="submit" class="save-btn">
+                    SAVE DEVICE
+                </button>
+
+        </div>
+    </div>
+        </form>
+    </dialog>
+    <output></output>
     <script src="index.js"></script>
   </body>
 </html>
