@@ -26,7 +26,7 @@
     <main id="main">
       <div id="top-panel">
         <div id="general-statistic">
-          <p id="general-power-label">GENERAL POWER: <span id="general-power-value">0</span>w</p>
+          <p id="general-power-label">GENERAL POWER: <strong id="general-power-value">0W</strong></p>
         </div>
         <div id="detailed-statistics">
           <div id="floor-plan-wrapper">
@@ -71,13 +71,20 @@
                 <label for="device-name-input">Device Name:</label>
                 <input id="device-name-input" type="text" />
 
+                <label for="device-type-input">Type</label>
+                <select id="device-type-input">
+                    <option value="Light">Lightning💡</option>
+                    <option value="Freezer">Fridge❄️</option>
+                    <option value="TV">SmartTv📺</option>
+                </select>
+
                 <label for="device-power-input">Power (W):</label>
                 <input id="device-power-input" type="number" />
 
                 <label for="device-room-input">Room:</label>
                 <input id="device-room-input" type="number" />
 
-                <button id="save-device-btn" type="submit" class="save-btn">
+                <button id="save-device-btn" type="button" class="save-btn">
                     SAVE DEVICE
                 </button>
 
@@ -85,7 +92,7 @@
     </div>
         </form>
     </dialog>
-    <output></output>
+<!--    <output></output>-->
     <script src="index.js"></script>
   </body>
 </html>
