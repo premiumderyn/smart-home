@@ -91,11 +91,11 @@ class Device {
                 <img class="device__remove-icon" src="cross.png" alt="cross icon" />
             </div>
             <div class="device__header">
-                <p class="device__name"><strong>${this.name}</strong></p>
+                <p class="device__name"><span>${this.name}</span></p>
                 <hr class="device__divider" />
              </div>
             <div class="device__info">
-                <p class="device__power">Power: <span class="device__power-value">0</span>W</p>
+                <p class="device__power">Power:<span class="device__power-content"> <span class="device__power-value">0</span>W</span></p>
                 <p class="device__room">Room: ${this.room}</p>
             </div>
             <div class="device__status">
@@ -130,15 +130,18 @@ class Device {
   }
   updateView(){
       if (!this.element) return;
+      const deviceBorder = this.element
       const powerSpan = this.element.querySelector('.device__power-value');
       const btn = this.element.querySelector('.device__power-button');
       powerSpan.textContent = this.power;
       if (this.isOn) {
           btn.style.backgroundColor = "green";
           btn.textContent = "ON";
+          deviceBorder.style.borderColor = "#4FC765"
       } else {
           btn.style.backgroundColor = "red";
           btn.textContent = "OFF";
+          deviceBorder.style.borderColor = "#848080"
       }
   }
   changeDeviceStatus() {
@@ -223,12 +226,18 @@ class SmartTv extends Device {
         const functionalContainer = document.createElement('div');
       functionalContainer.classList.add('device__details');
         functionalContainer.innerHTML = `
+            <div class="device__details-content">
             <p>Volume: <span class="volume-val">${this.volume}</span></p>
+            <div class="device__details-btn">
             <button type="button" class="btn-volume-down">-</button>
             <button type="button" class="btn-volume-up">+</button>
+            </div>
+            </div>
             <p class="current-channel">Device is turned off</p>
+            <div class="device__details-control">
             <button type="button" class="btn-channel-prev">PREV</button>
             <button type="button" class="btn-channel-next">NEXT</button>
+            </div>
         `;
         const infoBlock = deviceCard.querySelector('.device__info');
         infoBlock.appendChild(functionalContainer);
@@ -426,13 +435,14 @@ class Lightning extends Device {
 }
 const checkboxButton = document.getElementById('electricity-checkbox');
 const generalEl = document.getElementById("general-power-value");
+const realForm = document.getElementById("add-device-form");
 const addDeviceButton = document.getElementById("btn-add-device");
 const loginDialog = document.getElementById("modal-dialog");
 const closeBtn = document.getElementById("modal-close-btn")
 const outputBox = document.querySelector('output');
 const allDevices = [];
 const myHomeElectricity = new Electricity(generalEl, checkboxButton);
-const addDeviceForm = document.getElementById("save-device-btn");
+const saveBtn = document.getElementById("save-device-btn");
 const deviceName = document.getElementById("device-name-input");
 const devicePower = document.getElementById("device-power-input");
 const deviceRoom = document.getElementById("device-room-input");
@@ -454,7 +464,7 @@ function addDeviceToPage(deviceObj) {
     const deviceCard = deviceObj.render(); // Створюємо HTML
     document.getElementById("devices").appendChild(deviceCard); // Додаємо в контейнер
 }
-addDeviceForm.addEventListener('click', function(event) {
+saveBtn.addEventListener('click', function(event) {
     event.preventDefault();
     const name = deviceName.value;
     const power = parseInt(devicePower.value);
@@ -474,8 +484,9 @@ addDeviceForm.addEventListener('click', function(event) {
     }
     addDeviceToPage(newDevice);
     loginDialog.close();
-    addDeviceForm.reset();
-
+    if (realForm) {
+        realForm.reset();
+    }
 })
 const generalElectricity = document.getElementById("electricity-checkbox");
 generalElectricity.addEventListener('change', (e) => {
