@@ -10,12 +10,12 @@ class Electricity {
     this.generalEl = 0;
     this.load = 0;
     this.displayElement = displayElement;
-      this.isMasterSwitchOn = true;
+    this.isMasterSwitchOn = true;
   }
-  updateGeneralTextView(){
-      if(this.displayElement){
-          this.displayElement.textContent=this.generalEl +"W";
-      }
+  updateGeneralTextView() {
+    if (this.displayElement) {
+      this.displayElement.textContent = this.generalEl + "W";
+    }
   }
   get generalElectricity() {
     return this.generalEl;
@@ -25,7 +25,6 @@ class Electricity {
     this.changeLoad();
     this.updateGeneralTextView();
     return this.generalEl;
-
   }
   removeConsumption(Power) {
     this.generalEl -= Power;
@@ -50,27 +49,27 @@ class Electricity {
     }
     this.updateLoadColor();
   }
-  updateLoadColor(){
-      switch(true){
-          case this.load === 0:
-              this.displayElement.style.color = "black";
-              break;
-          case this.load === 1:
-              this.displayElement.style.color = "#4FC765";
-              break;
-          case this.load === 2:
-              this.displayElement.style.color = "#D97706";
-              break;
-          case this.load === 3:
-              this.displayElement.style.color = "#EF4A4A";
-              break;
-      }
+  updateLoadColor() {
+    switch (true) {
+      case this.load === 0:
+        this.displayElement.style.color = "black";
+        break;
+      case this.load === 1:
+        this.displayElement.style.color = "#4FC765";
+        break;
+      case this.load === 2:
+        this.displayElement.style.color = "#D97706";
+        break;
+      case this.load === 3:
+        this.displayElement.style.color = "#EF4A4A";
+        break;
+    }
   }
   get currentLoad() {
     return this.load;
   }
   setMasterSwitch(status) {
-      this.isMasterSwitchOn = status;
+    this.isMasterSwitchOn = status;
   }
 }
 class Device {
@@ -79,14 +78,15 @@ class Device {
     this.power = 0;
     this.room = room;
     this.isOn = false;
-    this.basePower=power;
+    this.basePower = power;
     this.houseMeter = houseMeter;
     this.element = null;
+    this.htmlView = true;
   }
-  renderDevice(){
-      const div = document.createElement('div');
-      div.classList.add('device');
-      div.innerHTML = `
+  renderDevice() {
+    const div = document.createElement("div");
+    div.classList.add("device");
+    div.innerHTML = `
             <div class="device__remove">
                 <img class="device__remove-icon" src="cross.png" alt="cross icon" />
             </div>
@@ -102,83 +102,95 @@ class Device {
                 <button class="device__power-button" style="background-color: red;">OFF</button>
             </div>
         `;
-      this.element = div;
-      const deleteBtn = div.querySelector(".device__remove-icon");
+    this.element = div;
+    const deleteBtn = div.querySelector(".device__remove-icon");
 
-      const btn = div.querySelector('.device__power-button');
-      btn.addEventListener('click', () => {
-          this.changeDeviceStatus();
-          this.updateView();
+    const btn = div.querySelector(".device__power-button");
+    btn.addEventListener("click", () => {
+      this.changeDeviceStatus();
+      this.updateView();
+    });
+    deleteBtn.addEventListener("click", () => {
+      this.deleteDevice(div);
+    });
 
-      });
-      deleteBtn.addEventListener('click', () => {
-      this.deleteDevice(div)
-      })
-
-      return div;
+    return div;
   }
-  deleteDevice(el){
-      if (this.isOn) {
-          this.houseMeter.removeConsumption(this.power);
-      }
-      const index = allDevices.indexOf(this);
-      if (index > -1) {
-          console.log(allDevices.splice(index, 1)); // Вирізаємо його з масиву
-      }
-          this.element.remove();
-          el=null;
+  deleteDeviceHtml() {
+    if (this.element) {
+      this.element.remove();
+    }
+    this.htmlView = false;
   }
-  updateView(){
-      if (!this.element) return;
-      const deviceBorder = this.element
-      const powerSpan = this.element.querySelector('.device__power-value');
-      const btn = this.element.querySelector('.device__power-button');
-      powerSpan.textContent = this.power;
-      if (this.isOn) {
-          btn.style.backgroundColor = "green";
-          btn.textContent = "ON";
-          deviceBorder.style.borderColor = "#4FC765"
-      } else {
-          btn.style.backgroundColor = "red";
-          btn.textContent = "OFF";
-          deviceBorder.style.borderColor = "#848080"
-      }
+  deleteDevice(el) {
+    if (this.isOn) {
+      this.houseMeter.removeConsumption(this.power);
+    }
+    const index = allDevices.indexOf(this);
+    if (index > -1) {
+      console.log(allDevices.splice(index, 1)); // Вирізаємо його з масиву
+    }
+    this.element.remove();
+    el = null;
+    saveSystemState();
+  }
+  updateView() {
+    if (!this.element) return;
+    const deviceBorder = this.element;
+    const powerSpan = this.element.querySelector(".device__power-value");
+    const btn = this.element.querySelector(".device__power-button");
+    powerSpan.textContent = this.power;
+    if (this.isOn) {
+      btn.style.backgroundColor = "green";
+      btn.textContent = "ON";
+      deviceBorder.style.borderColor = "#4FC765";
+    } else {
+      btn.style.backgroundColor = "red";
+      btn.textContent = "OFF";
+      deviceBorder.style.borderColor = "#848080";
+    }
   }
   changeDeviceStatus() {
-      if (!this.isOn && !this.houseMeter.isMasterSwitchOn) {
-          alert("NO POWER! TURN ON ELECTRICITY.");
-          return this.isOn;
-      }
+    if (!this.isOn && !this.houseMeter.isMasterSwitchOn) {
+      alert("NO POWER! TURN ON ELECTRICITY.");
+      return this.isOn;
+    }
     this.isOn = !this.isOn;
     if (this.isOn) {
-        this.power=this.basePower;
+      this.power = this.basePower;
       this.houseMeter.addConsumption(this.power);
-    } else{
-        this.houseMeter.removeConsumption(this.power);
-        this.power=0;
+    } else {
+      this.houseMeter.removeConsumption(this.power);
+      this.power = 0;
     }
     this.updateView();
+    saveSystemState();
     return this.isOn;
   }
-  get genElectricity() {
-    return this.houseMeter.generalElectricity;
-  }
-  get currentLoad() {
-    return this.houseMeter.currentLoad;
-  }
-  get currentPower(){
-      return this.power;
-  }
-  turnOffDevice(){
-      if(this.isOn) {
-          this.changeDeviceStatus();
-      } else return this.isOn;
-  }
-  // turnOnDevice(){
-  //     if(!this.isOn){
-  //         this.changeDeviceStatus();
-  //     }else return this.isOn;
+  // get genElectricity() {
+  //   return this.houseMeter.generalElectricity;
   // }
+  // get currentLoad() {
+  //   return this.houseMeter.currentLoad;
+  // }
+  // get currentPower(){
+  //     return this.power;
+  // }
+  get viewHtmlStatus() {
+    return this.htmlView;
+  }
+  changeHtmlStatus() {
+    return (this.htmlView = !this.htmlView);
+  }
+
+  // turnOffDevice(){
+  //     if(this.isOn) {
+  //         this.changeDeviceStatus();
+  //     } else return this.isOn;
+  // }
+  get deviceRoom() {
+    return this.room;
+  }
 }
 class SmartTv extends Device {
   constructor(name, power, room, houseMeter) {
@@ -194,38 +206,49 @@ class SmartTv extends Device {
     return this.volume;
   }
   changeVolume(bool) {
-      if(!this.isOn){
-          return this.currentVolume
-      }
-      if((this.volume ===100 && bool===true) || (this.volume===0 && bool===false)){
-          return this.currentVolume
-
-      }
+    if (!this.isOn) {
+      return this.currentVolume;
+    }
+    if (
+      (this.volume === 100 && bool === true) ||
+      (this.volume === 0 && bool === false)
+    ) {
+      return this.currentVolume;
+    }
 
     bool ? this.volume++ : this.volume--;
+    saveSystemState();
     return this.currentVolume;
   }
   changeChannel(bool) {
-      if(!this.isOn) return this.channel;
+    if (!this.isOn) return this.channel;
+
     for (let i = 1; i <= channel.size; i++) {
       if (channel.get(i) === this.channel) {
         if (bool) {
           if (i !== channel.size) {
-            return (this.channel = channel.get(i + 1));
-          } else return (this.channel = channel.get(1));
+            this.channel = channel.get(i + 1);
+          } else {
+            this.channel = channel.get(1);
+          }
         } else {
           if (i !== 1) {
-            return (this.channel = channel.get(i - 1));
-          } else return (this.channel = channel.get(channel.size));
+            this.channel = channel.get(i - 1);
+          } else {
+            this.channel = channel.get(channel.size);
+          }
         }
+        saveSystemState();
+        return this.channel;
       }
     }
+    return this.channel;
   }
-  render(){
-        const deviceCard = super.renderDevice();
-        const functionalContainer = document.createElement('div');
-      functionalContainer.classList.add('device__details');
-        functionalContainer.innerHTML = `
+  render() {
+    const deviceCard = super.renderDevice();
+    const functionalContainer = document.createElement("div");
+    functionalContainer.classList.add("device__details");
+    functionalContainer.innerHTML = `
             <div class="device__details-content">
             <p>Volume: <span class="volume-val">${this.volume}</span></p>
             <div class="device__details-btn">
@@ -239,58 +262,56 @@ class SmartTv extends Device {
             <button type="button" class="btn-channel-next">NEXT</button>
             </div>
         `;
-        const infoBlock = deviceCard.querySelector('.device__info');
-        infoBlock.appendChild(functionalContainer);
-        const volumeDown = functionalContainer.querySelector('.btn-volume-down');
-        const volumeUp = functionalContainer.querySelector('.btn-volume-up');
-        const prevChannel = functionalContainer.querySelector('.btn-channel-prev');
-        const nextChannel = functionalContainer.querySelector('.btn-channel-next');
-        volumeDown.addEventListener('click', () => {
-            this.changeVolume(false);
-            this.updateView();
-        });
-        volumeUp.addEventListener('click', () => {
-            this.changeVolume(true);
-            this.updateView();
-        })
-        prevChannel.addEventListener('click', () => {
-            this.changeChannel(false);
-            this.updateView();
-        })
-        nextChannel.addEventListener('click', () => {
-            this.changeChannel(true);
-            this.updateView();
+    const infoBlock = deviceCard.querySelector(".device__info");
+    infoBlock.appendChild(functionalContainer);
+    const volumeDown = functionalContainer.querySelector(".btn-volume-down");
+    const volumeUp = functionalContainer.querySelector(".btn-volume-up");
+    const prevChannel = functionalContainer.querySelector(".btn-channel-prev");
+    const nextChannel = functionalContainer.querySelector(".btn-channel-next");
+    volumeDown.addEventListener("click", () => {
+      this.changeVolume(false);
+      this.updateView();
+    });
+    volumeUp.addEventListener("click", () => {
+      this.changeVolume(true);
+      this.updateView();
+    });
+    prevChannel.addEventListener("click", () => {
+      this.changeChannel(false);
+      this.updateView();
+    });
+    nextChannel.addEventListener("click", () => {
+      this.changeChannel(true);
+      this.updateView();
+      console.log("Hi!");
+    });
+    return deviceCard;
+  }
+  updateView() {
+    super.updateView();
+    if (!this.element) return;
+    const VolumeSpan = this.element.querySelector(".volume-val");
+    const channelPrg = this.element.querySelector(".current-channel");
 
-        })
-      return deviceCard;
-
-      };
-
-    updateView(){
-        super.updateView();
-        if (!this.element) return;
-        const VolumeSpan = this.element.querySelector('.volume-val');
-        const channelPrg=this.element.querySelector('.current-channel');
-
-        if (VolumeSpan) VolumeSpan.textContent = this.volume;
-        if(channelPrg && this.isOn) {
-            channelPrg.textContent = this.channel;
-        } else channelPrg.textContent = "Device is turned off";
+    if (VolumeSpan) VolumeSpan.textContent = this.volume;
+    if (channelPrg && this.isOn) {
+      channelPrg.textContent = this.channel;
+    } else channelPrg.textContent = "Device is turned off";
+  }
+  changeDeviceStatus() {
+    super.changeDeviceStatus();
+    if (!this.isOn) {
+      this.volume = 0;
+      this.channel = channel.get(1);
     }
-    changeDeviceStatus(){
-      super.changeDeviceStatus();
-      if(!this.isOn){
-          this.volume=0;
-          this.channel=channel.get(1);
-      }
-      this.updateView()
-    }
+    this.updateView();
+  }
 }
 class Freezer extends Device {
   constructor(name, power, room, houseMeter) {
     super(name, power, room, houseMeter);
     this.temperature = 5;
-    this.basePower=power;
+    this.basePower = power;
   }
   get currentTemperature() {
     return this.temperature;
@@ -308,138 +329,141 @@ class Freezer extends Device {
       this.power = this.basePower;
     }
     this.houseMeter.addConsumption(this.power);
-    return (this.temperature = value);
+    this.temperature = value;
+    saveSystemState();
+    return this.temperature;
   }
-  render(){
-        const deviceCard = super.renderDevice();
-        const TemperatureContainer = document.createElement('div');
-        TemperatureContainer.classList.add('device__details');
-        TemperatureContainer.innerHTML = `
+  render() {
+    const deviceCard = super.renderDevice();
+    const TemperatureContainer = document.createElement("div");
+    TemperatureContainer.classList.add("device__details");
+    TemperatureContainer.innerHTML = `
             <p>Temperature: <span class="temp-val">${this.temperature}</span>°C</p>
             <input type="range" class="temp-range" min="1" max="8" value="${this.temperature}">
         `;
-        const infoBlock = deviceCard.querySelector('.device__info');
-        infoBlock.appendChild(TemperatureContainer);
-        const range = TemperatureContainer.querySelector('.temp-range');
-        range.addEventListener('input', (e) => {
-            this.changeTemperature(parseInt(e.target.value));
-            this.updateView();
-        });
-        return deviceCard;
+    const infoBlock = deviceCard.querySelector(".device__info");
+    infoBlock.appendChild(TemperatureContainer);
+    const range = TemperatureContainer.querySelector(".temp-range");
+    range.addEventListener("input", (e) => {
+      this.changeTemperature(parseInt(e.target.value));
+      this.updateView();
+    });
+    return deviceCard;
   }
-  updateView(){
-        super.updateView();
-        if (!this.element) return;
-        const TempSpan = this.element.querySelector('.temp-val');
-        const range = this.element.querySelector('.temp-range');
+  updateView() {
+    super.updateView();
+    if (!this.element) return;
+    const TempSpan = this.element.querySelector(".temp-val");
+    const range = this.element.querySelector(".temp-range");
 
-        if (TempSpan) TempSpan.textContent = this.temperature;
-        if (range) range.value = this.temperature
+    if (TempSpan) TempSpan.textContent = this.temperature;
+    if (range) range.value = this.temperature;
   }
-  changeDeviceStatus(){
-        super.changeDeviceStatus();
-        if(!this.isOn){
-            this.temperature=5;
-        }
-        this.updateView()
-
+  changeDeviceStatus() {
+    super.changeDeviceStatus();
+    if (!this.isOn) {
+      this.temperature = 5;
+    }
+    this.updateView();
   }
 }
 class Lightning extends Device {
-    constructor(name, power, room, houseMeter) {
-        super(name, power, room, houseMeter);
-        this.brightness = 0;
-        this.basePower=power;
-    }
-    render(){
-        const deviceCard = super.renderDevice();
-        const brightnessContainer = document.createElement('div');
-        brightnessContainer.classList.add('device__details');
-        brightnessContainer.innerHTML = `
+  constructor(name, power, room, houseMeter) {
+    super(name, power, room, houseMeter);
+    this.brightness = 0;
+    this.basePower = power;
+  }
+  render() {
+    const deviceCard = super.renderDevice();
+    const brightnessContainer = document.createElement("div");
+    brightnessContainer.classList.add("device__details");
+    brightnessContainer.innerHTML = `
             <p>Brightness: <span class="bright-val">${this.brightness}</span>%</p>
             <input type="range" class="bright-range" min="0" max="100" value="${this.brightness}">
         `;
-        const infoBlock = deviceCard.querySelector('.device__info');
-        infoBlock.appendChild(brightnessContainer);
-        const range = brightnessContainer.querySelector('.bright-range');
-        range.addEventListener('input', (e) => {
-            this.changeBrightness(parseInt(e.target.value));
-            this.updateView();
-        });
-        return deviceCard;
-    }
-    updateView(){
-        super.updateView();
-        if (!this.element) return;
-        const brightSpan = this.element.querySelector('.bright-val');
-        const range = this.element.querySelector('.bright-range');
+    const infoBlock = deviceCard.querySelector(".device__info");
+    infoBlock.appendChild(brightnessContainer);
+    const range = brightnessContainer.querySelector(".bright-range");
+    range.addEventListener("input", (e) => {
+      this.changeBrightness(parseInt(e.target.value));
+      this.updateView();
+    });
+    return deviceCard;
+  }
+  updateView() {
+    super.updateView();
+    if (!this.element) return;
+    const brightSpan = this.element.querySelector(".bright-val");
+    const range = this.element.querySelector(".bright-range");
 
-        if (brightSpan) brightSpan.textContent = this.brightness;
-        if (range) range.value = this.brightness
+    if (brightSpan) brightSpan.textContent = this.brightness;
+    if (range) range.value = this.brightness;
+  }
+  get currentBrightness() {
+    return this.brightness;
+  }
+  changeDeviceStatus() {
+    if (!this.isOn && !this.houseMeter.isMasterSwitchOn) {
+      alert("NO POWER! TURN ON ELECTRICITY.");
+      return this.isOn;
     }
-    get currentBrightness() {
-        return this.brightness;
+    if (!this.isOn) {
+      if (this.brightness === 0) {
+        this.brightness = 1;
+      }
+      this.isOn = true;
+      this.power = this.changePower();
+      this.houseMeter.addConsumption(this.power);
+    } else {
+      this.houseMeter.removeConsumption(this.power);
+      this.brightness = 0;
+      this.power = 0;
+      this.isOn = false;
     }
-    changeDeviceStatus(){
-        if (!this.isOn && !this.houseMeter.isMasterSwitchOn) {
-            alert("NO POWER! TURN ON ELECTRICITY.");
-            return this.isOn;
-        }
-        if(!this.isOn) {
-            if(this.brightness ===0) {
-                this.brightness = 1;
-            }
-            this.isOn = true;
-            this.power = this.changePower();
-            this.houseMeter.addConsumption(this.power);
-        } else {
-            this.houseMeter.removeConsumption(this.power);
-            this.brightness = 0;
-            this.power = 0;
-            this.isOn = false;
-        }
-        this.updateView();
-        return this.isOn;
+    this.updateView();
+    saveSystemState();
+    return this.isOn;
+  }
+  changeBrightness(value) {
+    if (!this.houseMeter.isMasterSwitchOn) return;
+    if (!this.isOn) {
+      this.brightness = value;
+      if (value > 0) {
+        this.changeDeviceStatus();
+      }
+      saveSystemState();
+      return this.brightness;
     }
-    changeBrightness(value) {
-        if(!this.houseMeter.isMasterSwitchOn) return
-        if (!this.isOn) {
-                this.brightness = value;
-                if (value > 0) {
-                    this.changeDeviceStatus();
-                }
-                return this.brightness;
+    this.houseMeter.removeConsumption(this.power);
 
-        }
-        this.houseMeter.removeConsumption(this.power);
-
-        this.brightness = value;
-        if (this.brightness === 0) {
-            this.power = 0;
-            this.isOn = false;
-            this.updateView();
-            return 0;
-        }
-        this.power = this.changePower();
-        this.houseMeter.addConsumption(this.power);
-        this.updateView();
-        return this.brightness;
-
+    this.brightness = value;
+    if (this.brightness === 0) {
+      this.power = 0;
+      this.isOn = false;
+      this.updateView();
+      saveSystemState();
+      return 0;
     }
-    changePower(){
-        return Math.floor(this.basePower*(this.brightness/100));
-    }
-    get currentStatus(){
-        return this.isOn;
-    }
+    this.power = this.changePower();
+    this.houseMeter.addConsumption(this.power);
+    this.updateView();
+    saveSystemState();
+    return this.brightness;
+  }
+  changePower() {
+    return Math.floor(this.basePower * (this.brightness / 100));
+  }
+  get currentStatus() {
+    return this.isOn;
+  }
 }
-const checkboxButton = document.getElementById('electricity-checkbox');
+const checkboxButton = document.getElementById("electricity-checkbox");
 const generalEl = document.getElementById("general-power-value");
 const realForm = document.getElementById("add-device-form");
 const addDeviceButton = document.getElementById("btn-add-device");
 const loginDialog = document.getElementById("modal-dialog");
-const closeBtn = document.getElementById("modal-close-btn")
-const outputBox = document.querySelector('output');
+const closeBtn = document.getElementById("modal-close-btn");
+// const outputBox = document.querySelector('output');
 const allDevices = [];
 const myHomeElectricity = new Electricity(generalEl, checkboxButton);
 const saveBtn = document.getElementById("save-device-btn");
@@ -447,73 +471,284 @@ const deviceName = document.getElementById("device-name-input");
 const devicePower = document.getElementById("device-power-input");
 const deviceRoom = document.getElementById("device-room-input");
 const deviceType = document.getElementById("device-type-input");
+const deviceRoomSorting = document.getElementById("room-select");
 
-addDeviceButton.addEventListener('click', () => {
-    loginDialog.showModal();
+deviceRoomSorting.addEventListener("input", (e) => {
+  let roomNum = parseInt(e.target.value);
+  console.log(roomNum);
+  for (let i = 0; i < allDevices.length; i++) {
+    if (allDevices[i].deviceRoom !== roomNum && roomNum !== 0) {
+      if (allDevices[i].viewHtmlStatus === true) {
+        allDevices[i].deleteDeviceHtml();
+        console.log("here");
+      }
+    } else if (
+      (allDevices[i].deviceRoom === roomNum &&
+        allDevices[i].viewHtmlStatus === false) ||
+      (roomNum === 0 && allDevices[i].viewHtmlStatus === false)
+    ) {
+      allDevices[i].changeHtmlStatus();
+      console.log("there");
+      returnDeviceToPage2(allDevices[i]);
+    }
+  }
 });
-
-closeBtn.addEventListener('click', () => {
-    loginDialog.close('cancelled');
+deviceRoomSorting.addEventListener("input", (e) => {
+  const selectedRoom = parseInt(e.target.value);
+  filterDevices(selectedRoom);
+  localStorage.setItem("activeRoomFilter", selectedRoom);
 });
+function filterDevices(roomNum) {
+  console.log("Застосовую фільтр для кімнати:", roomNum);
 
-// loginDialog.addEventListener('close', () => {
-//     outputBox.value = `Dialog result: ${loginDialog.returnValue}`;
-// });
-function addDeviceToPage(deviceObj) {
-    allDevices.push(deviceObj);
-    const deviceCard = deviceObj.render(); // Створюємо HTML
-    document.getElementById("devices").appendChild(deviceCard); // Додаємо в контейнер
+  for (let i = 0; i < allDevices.length; i++) {
+    const device = allDevices[i];
+    const shouldBeVisible = roomNum === 0 || device.deviceRoom === roomNum;
+    if (shouldBeVisible && device.viewHtmlStatus === false) {
+      device.changeHtmlStatus();
+      returnDeviceToPage2(device);
+    } else if (!shouldBeVisible && device.viewHtmlStatus === true) {
+      device.deleteDeviceHtml();
+    }
+  }
 }
-saveBtn.addEventListener('click', function(event) {
-    event.preventDefault();
-    const name = deviceName.value;
-    const power = parseInt(devicePower.value);
-    const room = parseInt(deviceRoom.value);
-    const type = deviceType.value;
+addDeviceButton.addEventListener("click", () => {
+  loginDialog.showModal();
+});
+
+closeBtn.addEventListener("click", () => {
+  loginDialog.close("cancelled");
+});
+function addDeviceToPage(deviceObj) {
+  allDevices.push(deviceObj);
+  const deviceCard = deviceObj.render();
+  document.getElementById("devices").appendChild(deviceCard);
+}
+function returnDeviceToPage2(deviceObj) {
+  const deviceCard = deviceObj.render();
+  document.getElementById("devices").appendChild(deviceCard);
+  deviceObj.updateView();
+}
+saveBtn.addEventListener("click", function (event) {
+  event.preventDefault();
+  if (!realForm.reportValidity()) {
+    return;
+  }
+  const name = deviceName.value;
+  const power = parseInt(devicePower.value);
+  const room = parseInt(deviceRoom.value);
+  const type = deviceType.value;
+  let newDevice;
+  switch (type) {
+    case "Light":
+      newDevice = new Lightning(name, power, room, myHomeElectricity);
+      break;
+    case "TV":
+      newDevice = new SmartTv(name, power, room, myHomeElectricity);
+      break;
+    case "Freezer":
+      newDevice = new Freezer(name, power, room, myHomeElectricity);
+      break;
+  }
+  addDeviceToPage(newDevice);
+  saveSystemState();
+  loginDialog.close();
+  const savedFilter = parseInt(localStorage.getItem("activeRoomFilter")) || 0;
+  deviceRoomSorting.value = savedFilter;
+  filterDevices(savedFilter);
+  if (realForm) {
+    realForm.reset();
+  }
+});
+const generalElectricity = document.getElementById("electricity-checkbox");
+generalElectricity.addEventListener("change", (e) => {
+  if (!e.target.checked) {
+    myHomeElectricity.setMasterSwitch(false);
+    for (let i = 0; i < allDevices.length; i++) {
+      const device = allDevices[i];
+      // allDevices[i].turnOffDevice();
+      if (device.isOn) {
+        device.changeDeviceStatus();
+      }
+    }
+  } else {
+    myHomeElectricity.setMasterSwitch(true);
+  }
+  saveSystemState();
+});
+const floorPlanBtn = document.querySelector(".floor-plan-btn");
+const floorDialog = document.getElementById("floor-plan-dialog");
+const closeFloorBtn = document.getElementById("close-floor-plan");
+
+const btnFloorPlan = document.getElementById("btn-floor-plan");
+
+if (btnFloorPlan) {
+  btnFloorPlan.addEventListener("click", () => {
+    updateFloorPlanData(); // Оновити дані перед показом
+    floorDialog.showModal();
+  });
+}
+
+closeFloorBtn.addEventListener("click", () => {
+  floorDialog.close();
+});
+function updateFloorPlanData() {
+  // 1. Скидаємо лічильники
+  const roomStats = {
+    1: { power: 0, hasLightOn: false },
+    2: { power: 0, hasLightOn: false },
+    3: { power: 0, hasLightOn: false },
+  };
+  allDevices.forEach((device) => {
+    if (roomStats[device.deviceRoom]) {
+      roomStats[device.deviceRoom].power += device.power;
+      if (device.isOn) {
+        roomStats[device.deviceRoom].hasLightOn = true;
+      }
+    }
+  });
+  for (let i = 1; i <= 3; i++) {
+    const zone = document.getElementById(`zone-room-${i}`);
+    const textPower = document.getElementById(`power-room-${i}`);
+    if (textPower) {
+      textPower.textContent = `${roomStats[i].power} W`;
+    }
+    if (zone) {
+      if (roomStats[i].hasLightOn) {
+        zone.classList.add("active");
+      } else {
+        zone.classList.remove("active");
+      }
+    }
+  }
+}
+window.toggleRoomLights = function (roomNumber) {
+  let anyDeviceOn = false;
+
+  allDevices.forEach((device) => {
+    if (device.deviceRoom === roomNumber && device.isOn) {
+      anyDeviceOn = true;
+    }
+  });
+  const targetState = !anyDeviceOn;
+  allDevices.forEach((device) => {
+    if (device.deviceRoom === roomNumber) {
+      if (device.isOn !== targetState) {
+        device.changeDeviceStatus();
+      }
+    }
+  });
+
+  updateFloorPlanData();
+};
+function saveSystemState() {
+  const devicesData = allDevices.map((device) => {
+    return {
+      classType: device.constructor.name,
+      name: device.name,
+      basePower: device.basePower,
+      room: device.room,
+
+      isOn: device.isOn,
+      volume: device.volume || 0,
+      temperature: device.temperature || 0,
+      brightness: device.brightness || 0,
+      channelName: device.channel,
+    };
+  });
+
+  localStorage.setItem("mySmartHome_Devices", JSON.stringify(devicesData));
+  localStorage.setItem(
+    "mySmartHome_MasterSwitch",
+    myHomeElectricity.isMasterSwitchOn
+  );
+}
+
+function loadSystemState() {
+  const savedMasterSwitch = localStorage.getItem("mySmartHome_MasterSwitch");
+  if (savedMasterSwitch !== null) {
+    const isMsgOn = savedMasterSwitch === "true";
+    myHomeElectricity.setMasterSwitch(isMsgOn);
+    const checkbox = document.getElementById("electricity-checkbox");
+    if (checkbox) checkbox.checked = isMsgOn;
+  }
+
+  const savedData = localStorage.getItem("mySmartHome_Devices");
+  if (!savedData) return false;
+  const parsedData = JSON.parse(savedData);
+
+  document.getElementById("devices").innerHTML = "";
+  allDevices.length = 0;
+
+  parsedData.forEach((item) => {
     let newDevice;
-    switch (type) {
-        case "Light":
-            newDevice = new Lightning(name, power, room, myHomeElectricity);
-            break;
-        case "TV":
-            newDevice = new SmartTv(name, power, room, myHomeElectricity);
-            break;
-        case "Freezer":
-            newDevice = new Freezer(name, power, room, myHomeElectricity);
-            break;
+
+    switch (item.classType) {
+      case "SmartTv":
+        newDevice = new SmartTv(
+          item.name,
+          item.basePower,
+          item.room,
+          myHomeElectricity
+        );
+        newDevice.volume = item.volume;
+        break;
+      case "Freezer":
+        newDevice = new Freezer(
+          item.name,
+          item.basePower,
+          item.room,
+          myHomeElectricity
+        );
+        newDevice.temperature = item.temperature;
+        break;
+      case "Lightning":
+        newDevice = new Lightning(
+          item.name,
+          item.basePower,
+          item.room,
+          myHomeElectricity
+        );
+        newDevice.brightness = item.brightness;
+        break;
+      default:
+        newDevice = new Device(
+          item.name,
+          item.basePower,
+          item.room,
+          myHomeElectricity
+        );
+        break;
+    }
+    newDevice.isOn = item.isOn;
+
+    if (newDevice.isOn) {
+      if (item.classType === "Lightning") {
+        newDevice.power = Math.floor(
+          newDevice.basePower * (newDevice.brightness / 100)
+        );
+      } else if (item.classType === "Freezer") {
+        newDevice.power = newDevice.basePower;
+      } else {
+        newDevice.power = newDevice.basePower;
+      }
+      myHomeElectricity.generalEl += newDevice.power;
     }
     addDeviceToPage(newDevice);
-    loginDialog.close();
-    if (realForm) {
-        realForm.reset();
-    }
-})
-const generalElectricity = document.getElementById("electricity-checkbox");
-generalElectricity.addEventListener('change', (e) => {
-    if (!e.target.checked) {
-        myHomeElectricity.setMasterSwitch(false);
-        for(let i=0; i<allDevices.length; i++) {
-            const device = allDevices[i];
-            // allDevices[i].turnOffDevice();
-            if (device.isOn) {
-                device.changeDeviceStatus();
-            }
-        }
-    } else{
-        myHomeElectricity.setMasterSwitch(true);
-    }
-})
-// const Lamp1 = new Lightning("Lampa", 100, 2, myHomeElectricity);
-// // addDeviceToPage(Lamp1);
-// const Lamp2 = new Lightning("Bulb", 200, 1, myHomeElectricity);
-// addDeviceToPage(Lamp2);
-// addDeviceToPage(new Lightning("Lamp", 100, 2, myHomeElectricity));
-// addDeviceToPage(new Lightning("Lamp1", 1500, 2, myHomeElectricity));
-// addDeviceToPage(new Lightning("Lamp2", 1000, 3, myHomeElectricity));
+    newDevice.updateView();
+  });
+  myHomeElectricity.changeLoad();
+  myHomeElectricity.updateGeneralTextView();
+  return true;
+}
+const isLoaded = loadSystemState();
 
-// const SamsungTv = new SmartTv("Samsung Tv", 1000, 2, myHomeElectricity);
-// const Refrigator = new Freezer("LG", 1500, 3, myHomeElectricity);
-
-SAMSUNG = new SmartTv("Samsung Tv", 1000, 2, myHomeElectricity);
-addDeviceToPage(SAMSUNG);
-
+if (!isLoaded) {
+  const Light = new Lightning("Bulb", 100, 1, myHomeElectricity);
+  const LG = new Freezer("LG", 100, 3, myHomeElectricity);
+  const Samsung = new SmartTv("Samsung", 400, 2, myHomeElectricity);
+  addDeviceToPage(Light);
+  addDeviceToPage(LG);
+  addDeviceToPage(Samsung);
+  saveSystemState();
+}
