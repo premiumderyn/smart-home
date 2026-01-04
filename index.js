@@ -700,8 +700,8 @@ const isLoaded = loadSystemState();
 
 if (!isLoaded) {
   const Light = new Lightning("Bulb", 100, 1, myHomeElectricity);
-  const LG = new Freezer("LG", 100, 3, myHomeElectricity);
-  const Samsung = new SmartTv("Samsung", 400, 2, myHomeElectricity);
+  const LG = new Freezer("LG", 100, 2, myHomeElectricity);
+  const Samsung = new SmartTv("Samsung", 400, 3, myHomeElectricity);
   addDeviceToPage(Light);
   addDeviceToPage(LG);
   addDeviceToPage(Samsung);
