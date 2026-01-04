@@ -707,3 +707,12 @@ if (!isLoaded) {
   addDeviceToPage(Samsung);
   saveSystemState();
 }
+const waterCheckbox = document.getElementById('water-checkbox');
+const STORAGE_KEY = 'waterValveStatus';
+const savedState = localStorage.getItem(STORAGE_KEY);
+if (savedState === 'true') {
+    waterCheckbox.checked = true;
+}
+waterCheckbox.addEventListener('change', function() {
+    localStorage.setItem(STORAGE_KEY, this.checked);
+});
