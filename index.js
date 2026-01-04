@@ -22,6 +22,11 @@ class Electricity {
   }
   addConsumption(Power) {
     this.generalEl += Power;
+    if (this.generalEl >= 4000) {
+      toggleGlobalElectricity(false);
+      generalElectricity.checked = false;
+      alert("⚠️ WARNING: Overload! System shut down for safety.");
+    }
     this.changeLoad();
     this.updateGeneralTextView();
     return this.generalEl;
@@ -128,7 +133,7 @@ class Device {
     }
     const index = allDevices.indexOf(this);
     if (index > -1) {
-      console.log(allDevices.splice(index, 1)); // Вирізаємо його з масиву
+      console.log(allDevices.splice(index, 1));
     }
     this.element.remove();
     el = null;
@@ -167,40 +172,21 @@ class Device {
     saveSystemState();
     return this.isOn;
   }
-  // get genElectricity() {
-  //   return this.houseMeter.generalElectricity;
-  // }
-  // get currentLoad() {
-  //   return this.houseMeter.currentLoad;
-  // }
-  // get currentPower(){
-  //     return this.power;
-  // }
   get viewHtmlStatus() {
     return this.htmlView;
   }
   changeHtmlStatus() {
     return (this.htmlView = !this.htmlView);
   }
-
-  // turnOffDevice(){
-  //     if(this.isOn) {
-  //         this.changeDeviceStatus();
-  //     } else return this.isOn;
-  // }
   get deviceRoom() {
     return this.room;
   }
 }
 class SmartTv extends Device {
   constructor(name, power, room, houseMeter) {
-    //ЧИ ПОТРІБНЕ NAME, чи клас буде називатись цим ім'ям
     super(name, power, room, houseMeter);
     this.volume = 0;
     this.channel = channel.get(1);
-  }
-  get currentChannel() {
-    return this.channel;
   }
   get currentVolume() {
     return this.volume;
@@ -283,7 +269,6 @@ class SmartTv extends Device {
     nextChannel.addEventListener("click", () => {
       this.changeChannel(true);
       this.updateView();
-      console.log("Hi!");
     });
     return deviceCard;
   }
@@ -312,9 +297,6 @@ class Freezer extends Device {
     super(name, power, room, houseMeter);
     this.temperature = 5;
     this.basePower = power;
-  }
-  get currentTemperature() {
-    return this.temperature;
   }
   changeTemperature(value) {
     if (!this.isOn) {
@@ -399,9 +381,6 @@ class Lightning extends Device {
     if (brightSpan) brightSpan.textContent = this.brightness;
     if (range) range.value = this.brightness;
   }
-  get currentBrightness() {
-    return this.brightness;
-  }
   changeDeviceStatus() {
     if (!this.isOn && !this.houseMeter.isMasterSwitchOn) {
       alert("NO POWER! TURN ON ELECTRICITY.");
@@ -463,7 +442,6 @@ const realForm = document.getElementById("add-device-form");
 const addDeviceButton = document.getElementById("btn-add-device");
 const loginDialog = document.getElementById("modal-dialog");
 const closeBtn = document.getElementById("modal-close-btn");
-// const outputBox = document.querySelector('output');
 const allDevices = [];
 const myHomeElectricity = new Electricity(generalEl, checkboxButton);
 const saveBtn = document.getElementById("save-device-btn");
@@ -472,35 +450,12 @@ const devicePower = document.getElementById("device-power-input");
 const deviceRoom = document.getElementById("device-room-input");
 const deviceType = document.getElementById("device-type-input");
 const deviceRoomSorting = document.getElementById("room-select");
-
-deviceRoomSorting.addEventListener("input", (e) => {
-  let roomNum = parseInt(e.target.value);
-  console.log(roomNum);
-  for (let i = 0; i < allDevices.length; i++) {
-    if (allDevices[i].deviceRoom !== roomNum && roomNum !== 0) {
-      if (allDevices[i].viewHtmlStatus === true) {
-        allDevices[i].deleteDeviceHtml();
-        console.log("here");
-      }
-    } else if (
-      (allDevices[i].deviceRoom === roomNum &&
-        allDevices[i].viewHtmlStatus === false) ||
-      (roomNum === 0 && allDevices[i].viewHtmlStatus === false)
-    ) {
-      allDevices[i].changeHtmlStatus();
-      console.log("there");
-      returnDeviceToPage2(allDevices[i]);
-    }
-  }
-});
 deviceRoomSorting.addEventListener("input", (e) => {
   const selectedRoom = parseInt(e.target.value);
   filterDevices(selectedRoom);
   localStorage.setItem("activeRoomFilter", selectedRoom);
 });
 function filterDevices(roomNum) {
-  console.log("Застосовую фільтр для кімнати:", roomNum);
-
   for (let i = 0; i < allDevices.length; i++) {
     const device = allDevices[i];
     const shouldBeVisible = roomNum === 0 || device.deviceRoom === roomNum;
@@ -561,12 +516,12 @@ saveBtn.addEventListener("click", function (event) {
   }
 });
 const generalElectricity = document.getElementById("electricity-checkbox");
-generalElectricity.addEventListener("change", (e) => {
-  if (!e.target.checked) {
+function toggleGlobalElectricity(isEnabled) {
+  if (!isEnabled) {
     myHomeElectricity.setMasterSwitch(false);
+
     for (let i = 0; i < allDevices.length; i++) {
       const device = allDevices[i];
-      // allDevices[i].turnOffDevice();
       if (device.isOn) {
         device.changeDeviceStatus();
       }
@@ -575,6 +530,9 @@ generalElectricity.addEventListener("change", (e) => {
     myHomeElectricity.setMasterSwitch(true);
   }
   saveSystemState();
+}
+generalElectricity.addEventListener("change", (e) => {
+  toggleGlobalElectricity(e.target.checked);
 });
 const floorPlanBtn = document.querySelector(".floor-plan-btn");
 const floorDialog = document.getElementById("floor-plan-dialog");
@@ -584,7 +542,7 @@ const btnFloorPlan = document.getElementById("btn-floor-plan");
 
 if (btnFloorPlan) {
   btnFloorPlan.addEventListener("click", () => {
-    updateFloorPlanData(); // Оновити дані перед показом
+    updateFloorPlanData();
     floorDialog.showModal();
   });
 }
@@ -593,7 +551,6 @@ closeFloorBtn.addEventListener("click", () => {
   floorDialog.close();
 });
 function updateFloorPlanData() {
-  // 1. Скидаємо лічильники
   const roomStats = {
     1: { power: 0, hasLightOn: false },
     2: { power: 0, hasLightOn: false },
@@ -663,7 +620,6 @@ function saveSystemState() {
     myHomeElectricity.isMasterSwitchOn
   );
 }
-
 function loadSystemState() {
   const savedMasterSwitch = localStorage.getItem("mySmartHome_MasterSwitch");
   if (savedMasterSwitch !== null) {
@@ -721,7 +677,6 @@ function loadSystemState() {
         break;
     }
     newDevice.isOn = item.isOn;
-
     if (newDevice.isOn) {
       if (item.classType === "Lightning") {
         newDevice.power = Math.floor(

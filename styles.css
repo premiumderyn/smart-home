@@ -9,7 +9,6 @@
   margin: 0;
   padding: 0;
 }
-
 :root {
   scroll-behavior: smooth;
   --background-color: #aec9ff;
@@ -26,6 +25,18 @@
   --active-device: #4fc765;
   --border-channel: #bdbdbd;
   --text-black: #000000;
+  --background-footer: #ccc;
+  --checker-input: #4caf50;
+  --modal-close: #555;
+  --modal-title: #333;
+  --modal-header: #eee;
+  --btn-background: #ff4d4d;
+  --btn-floor-modal: #cc0000;
+  --floor-room: #e0e0e0;
+  --floor-room-stroke: #555;
+  --floor-room-hover: #d0d0d0;
+  --floor-room-active: #fff9c4;
+  --floor-room-active-stroke: #fbc02d;
 }
 img {
   display: block;
@@ -119,7 +130,7 @@ body {
           font-family: var(--main-font);
           font-size: 21px;
           @media (min-width: 720px) {
-            margin-left: -70px;
+            margin-left: -42px;
           }
         }
         #btn-floor-plan:hover {
@@ -318,7 +329,7 @@ body {
   .slider {
     position: absolute;
     cursor: pointer;
-    background-color: #ccc;
+    background-color: var(--background-footer);
     border-radius: 24px;
     width: 100%;
     height: 100%;
@@ -340,7 +351,7 @@ body {
   }
 
   .switch input:checked + .slider {
-    background-color: #4caf50;
+    background-color: var(--checker-input);
   }
 
   .switch input:checked + .slider::before {
@@ -361,7 +372,7 @@ body {
 }
 
 #add-device-window {
-  background-color: #ffffff;
+  background-color: var(--text-white);
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
@@ -379,7 +390,7 @@ body {
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  color: #555;
+  color: var(--modal-close);
   line-height: 1;
 }
 
@@ -390,7 +401,7 @@ body {
 #modal-title {
   margin: 0;
   text-align: center;
-  color: #333;
+  color: var(--modal-title);
   font-family: var(--main-font);
   font-size: 25px;
   margin-bottom: 10px;
@@ -399,13 +410,13 @@ label {
   font-family: var(--modal-font);
   font-weight: bold;
   font-size: 17px;
-  color: #333;
+  color: var(--modal-title);
 }
 
 input,
 select {
   padding: 8px;
-  border: 2px solid #ccc;
+  border: 2px solid var(--background-footer);
   border-radius: 5px;
   font-size: 16px;
   width: 100%;
@@ -460,18 +471,18 @@ select {
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--modal-header);
 }
 .modal-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--modal-title);
   font-size: 15px;
   @media (min-width: 720px) {
     font-size: 23px;
   }
 }
 .close-btn1 {
-  background: #ff4d4d;
+  background: var(--btn-background);
   color: white;
   border: none;
   border-radius: 5px;
@@ -483,14 +494,14 @@ select {
   transition: background 0.2s;
 }
 .close-btn1:hover {
-  background: #cc0000;
+  background: var(--btn-floor-modal);
 }
 .room-zone {
   cursor: pointer;
 }
 .room-shape {
-  fill: #e0e0e0;
-  stroke: #555;
+  fill: var(--floor-room);
+  stroke: var(--floor-room-stroke);
   stroke-width: 2;
   transition: fill 0.3s ease;
   display: flex;
@@ -498,12 +509,12 @@ select {
 }
 
 .room-zone:hover .room-shape {
-  fill: #d0d0d0;
+  fill: var(--floor-room-hover);
 }
 
 .room-zone.active .room-shape {
-  fill: #fff9c4;
-  stroke: #fbc02d;
+  fill: var(--floor-room-active);
+  stroke: var(--floor-room-active-stroke);
 }
 
 .room-label,
@@ -516,14 +527,14 @@ select {
   text-anchor: middle;
   dominant-baseline: middle;
   font-weight: bold;
-  fill: #333;
+  fill: var(--modal-title);
   pointer-events: none;
 }
 .room-subtext {
   text-anchor: middle;
   dominant-baseline: middle;
   font-size: 14px;
-  fill: #555;
+  fill: var(--modal-close);
   pointer-events: none;
 }
 .apartment-map {
