@@ -93,7 +93,7 @@ class Device {
     div.classList.add("device");
     div.innerHTML = `
             <div class="device__remove">
-                <img class="device__remove-icon" src="cross.png" alt="cross icon" />
+                <img class="device__remove-icon" src="img/cross.png" alt="cross icon" />
             </div>
             <div class="device__header">
                 <p class="device__name"><span>${this.name}</span></p>
